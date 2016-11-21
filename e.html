@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html ng-app="MyRegistry">
+	<head>
+<script src="jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="angular.js"></script>
+<script type="text/javascript" src="angular-aria.js"></script>
+<script type="text/javascript" src="angular-animate.js"></script>
+<script type="text/javascript" src="angular-material.js"></script>
+<script type="text/javascript" src="angular-route.js"></script>
+<script type="text/javascript" src="eservice.js"></script>
+<script type="text/javascript" src="econtroller.js"></script>
+<script type="text/javascript" src="econtrolleraccount.js"></script>
+<script type="text/javascript" src="emodule.js"></script>
+
+
+<LINK href="bootstrap-3.3.5/dist/css/bootstrap.css" rel="stylesheet" type="text/css" media="all"> 
+<LINK href="angular-material.css" rel="stylesheet" type="text/css" media="all"> 
+<LINK href="ecss.css" rel="stylesheet" type="text/css" media="all"> 
+
+</head>
+<body>
+
+<div ng-controller="MyController as myCont">
+
+
+
+<form>
+
+<div style="clear:both; height: 0px;"></div>
+
+<div ng-controller="MyAccountController as myAcctCont" id="root-elem">
+	<div id="banner">
+		<div id="globalNav">
+			<div style="margin-left: 50px; margin-right: 50px;">
+					<a href="#" class="open-on-over" data-gnid="acctnav4">View<span class="glyphicon glyphicon-circle-arrow-down" style="margin-left: 4px;"></span></a>
+					<div style="display: inline" class="savedView" title="{{myAcctCont.getActiveView().description}}"><span class="starselected glyphicon glyphicon-star" ng-if="myAcctCont.getActiveView().id==myAcctCont.getDefaultView().id"></span>{{myAcctCont.getActiveView().label}}</div>
+					<div style="display: inline" ng-show="!myAcctCont.showAllActions()">
+						<a href="#" id="show-all-actions" title="Manage current view"><span class="glyphicon glyphicon-option-horizontal"></span></a>
+					</div>
+					<div id="manage-view-container" style="display: inline" ng-show="myAcctCont.showAllActions()">
+						<a href="#" class="open-on-click" data-gnid="savenav" ng-click="myAcctCont.saveAction()" title="Save/Save as" ng-show="!myAcctCont.getActiveView().isPredefinedView"><span class="glyphicon glyphicon-floppy-disk"></span></a>
+						<a href="#" class="open-on-click" data-gnid="saveasnav" ng-click="myAcctCont.saveAction()" title="Save as" ng-show="myAcctCont.getActiveView().isPredefinedView"><span class="glyphicon glyphicon-floppy-disk"></span></a>
+						<a href="#" class="open-on-click" data-gnid="" ng-click="myAcctCont.saveAction()" title="Revert modifications"><span class="glyphicon glyphicon-share-alt" style="margin-left:10px"></span></a>
+						<a href="#" class="open-on-click" data-gnid="renamenav" title="Rename view" ng-show="!myAcctCont.getActiveView().isPredefinedView"><span class="glyphicon glyphicon-pencil" style="margin-left:10px"></span></a>
+						<a href="#" class="open-on-click" data-gnid="defaultviewnav" title="Make default view" ng-show="myAcctCont.getActiveView().id!=myAcctCont.getDefaultView().id && !myAcctCont.getActiveView().isPredefinedView"><span class="glyphicon glyphicon-star" style="margin-left:10px"></span></a>
+						<a href="#" class="open-on-click" data-gnid="deletenav" title="Delete" ng-show="!myAcctCont.getActiveView().isPredefinedView"><span class="glyphicon glyphicon-trash" style="margin-left:10px"></span></a>
+					</div>
+			</div>
+		</div>
+		<div id="megaMenuContainer">
+			<div class="megaMenuSection" data-gnid="savenav">
+				<div class="megaMenuPanel">
+					<div ng-if="!myAcctCont.getIsViewRenameValid()">
+						<span class="error">That name is already in use. Choose another name</span>
+					</div>
+					<div>
+						<form name="saveAsForm">
+						<table>
+							<tr>
+								<td><input type="radio" checked="true" name="saveType" value="save" id="save-save"></td>
+								<td><label for="save-save">Select which modifications to save:</label></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>
+									<table>
+										<tr>
+											<td><input type="checkbox" value="filter" id="save-filter"><label style="padding-left: 0px; padding-right: 0px;">&nbsp;</label></td><td><label for="save-filter">Filter criteria</label></td>
+										</tr>
+										<tr>
+											<td><input type="checkbox" value="layout" id="save-layout"><label style="padding-left: 0px; padding-right: 0px;">&nbsp;</label></td><td><label for="save-layout">Table layout</label></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td><input type="radio" name="saveType" value="saveas" id="save-saveas"></td>
+								<td><label for="save-saveas">Save as:</label></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>
+									<span>Enter view name</span>
+									<input type="text" id="newViewNameInputField2" ng-model="viewRename" ng-model-options="{updateOn: 'default', getterSetter: true}" >
+								</td>
+							</tr>
+						</table>
+						<button ng-disabled="!myAcctCont.getIsViewRenameValid()" ng-click="myAcctCont.createNewView()">Apply</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="megaMenuSection" data-gnid="saveasnav">
+				<div class="megaMenuPanel">
+					<div ng-if="!myAcctCont.getIsViewRenameValid()">
+						<span class="error">That name is already in use. Choose another name</span>
+					</div>
+					<div>
+						<form name="saveAsForm">
+							<span>Enter the name of the new view</span>
+							<input type="text" id="newViewNameInputField" ng-model="viewRename" ng-model-options="{updateOn: 'default', getterSetter: true}" >
+							<button ng-disabled="!myAcctCont.getIsViewRenameValid()" ng-click="myAcctCont.createNewView()">Apply</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="megaMenuSection" data-gnid="renamenav">
+				<div class="megaMenuPanel">
+					<div ng-if="!myAcctCont.getIsViewRenameValid()">
+						<span class="error">That name is already in use. Choose another name</span>
+					</div>
+					<div>
+								<form name="viewRenameForm">
+									<span>Enter the new name</span>
+									<input type="text" id="newViewNameInputField" ng-model="viewRename" ng-model-options="{updateOn: 'default', getterSetter: true}" >
+									<button ng-disabled="!myAcctCont.getIsViewRenameValid()" ng-click="myAcctCont.renameActiveView()">Apply</button>
+								</form>
+					</div>
+				</div>
+			</div>
+			<div class="megaMenuSection" data-gnid="defaultviewnav">
+				<div class="megaMenuPanel">
+					<div>
+								<span>Please confirm to make this view the default one</span>
+								<button ng-click="myAcctCont.makeActiveDefaultView()">Confirm</button>
+					</div>
+				</div>
+			</div>
+			<div class="megaMenuSection" data-gnid="deletenav">
+				<div class="megaMenuPanel">
+					<div>
+								<span>Please confirm view deletion</span>
+								<button ng-click="myAcctCont.deleteActiveView();">Confirm</button>
+					</div>
+				</div>
+			</div>
+			<div class="megaMenuSection" data-gnid="acctnav4">
+				<div class="megaMenuPanel">
+					<table>
+						<tr>
+							<td colspan="3"><h3>My views</h3></td>
+						</tr>
+						<tr ng-repeat="view in myAcctCont.getCustomViews()">
+							<td></td>
+							<td><div class="savedView savedViewConfig" ng-click="myAcctCont.changeActiveView(view.id)"><span class="starselected glyphicon glyphicon-star" ng-if="view.id==myAcctCont.getDefaultView().id"></span>{{view.label}}</div></td>
+							<td><div>{{view.description}}</div></td>
+						</tr>
+						<tr>
+							<td colspan="3"><h3 style="padding-top: 20px;">Predefined views</h3></td>
+						</tr>
+						<tr ng-repeat="view in myAcctCont.getPredefinedViews()">
+							<td></span></td>
+							<td><div class="savedView savedViewConfig" ng-click="myAcctCont.changeActiveView(view.id)"><span class="starselected glyphicon glyphicon-star" ng-if="view.id==myAcctCont.getDefaultView().id"></span>{{view.label}}</div></td>
+							<td><div>{{view.description}}</div></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script language="JavaScript">
+		var currentGlobalNavItemShowing;
+		var hideGlobalNavTimerTask;
+		var hideAllActionPanelTimeTask;
+		
+		jQuery("document").ready(function(){
+			var globalNavElem = $("#globalNav");
+			
+			function launchHideGlobalNavOperation() {
+				hideGlobalNavTimerTask = setTimeout(function(){
+					$("#banner").removeClass("bannerShowMegaMenu");
+				},400);
+			}
+			
+			function hideGlobalNavOperation() {
+				console.log("hideGlobalNavOperation");
+				$("#banner").removeClass("bannerShowMegaMenu");
+			}
+			
+			function cancelHideGlobalNavOperation() {
+				if (hideGlobalNavTimerTask) {
+					clearTimeout(hideGlobalNavTimerTask);
+					hideGlobalNavTimerTask = null;
+				}
+			}
+			
+			function activateShowGlobalNavOperation(elem) {
+				setTimeout(function(){
+					$("#banner").addClass("bannerShowMegaMenu");
+					if (currentGlobalNavItemShowing) {
+						currentGlobalNavItemShowing.removeClass("showing");
+					}
+					elem.addClass("showing");
+					var navId = elem.attr("data-gnid");
+					console.log("navId = " + navId);
+					currentGlobalNavItemShowing = elem;
+					
+					$(".megaMenuSection").each(function() {
+						$(this).removeClass("showing");
+						if ($(this).attr("data-gnid")==navId) {
+							$(this).addClass("showing");
+						}
+					});
+				},250);
+			}
+			
+			$("a.open-on-over", globalNavElem).each(function() {
+				$(this).mouseenter(function(){
+					activateShowGlobalNavOperation($(this));
+				});
+				$(this).mouseleave(function(){
+					launchHideGlobalNavOperation($(this));
+				});
+			});
+			$("a.open-on-click", globalNavElem).each(function() {
+				$(this).click(function(){
+					activateShowGlobalNavOperation($(this));
+				});
+			});
+			
+			$("#globalNav", globalNavElem).hover(function(){
+				cancelHideGlobalNavOperation();
+			},function(){
+				launchHideGlobalNavOperation();
+			});
+			$("#megaMenuContainer").on("mouseover", function() {
+				cancelHideGlobalNavOperation();
+			}).on("mouseout", function(){
+				launchHideGlobalNavOperation();
+			});
+			
+			$("#manage-view-container").on("mouseover", function() {
+				if (hideAllActionPanelTimeTask) {
+					clearTimeout(hideAllActionPanelTimeTask);
+					hideAllActionPanelTimeTask = null;
+				}
+				cancelHideGlobalNavOperation();
+			}).on("mouseout", function(){
+				hideAllActionPanelTimeTask = setTimeout(function(){
+					var scope = angular.element($("#root-elem")).scope();
+					scope.$apply(function(){
+						scope.myAcctCont.showAllActionsAction(false);
+					})
+				},400);
+			});
+			
+			$("#show-all-actions").on("mouseover", function() {
+				var scope = angular.element($("#root-elem")).scope();
+				scope.$apply(function(){
+					scope.myAcctCont.showAllActionsAction(true);
+				})
+			});
+			
+			$("button").each(function() {
+				$(this).click(function(){
+					hideGlobalNavOperation();
+				});
+			});
+			
+			$(".savedViewConfig").each(function() {
+				$(this).click(function(){
+					hideGlobalNavOperation();
+				});
+			});
+		});
+	</script>
+</div>	
+
+</form>
+</div>
+
+
+
+</body>
+</html>

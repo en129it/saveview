@@ -1,0 +1,280 @@
+html, body {
+	font-size: 14px;
+	font-family: "HelvRegularIBM","Helvetica Neue",Arial,sans-serif;
+	background: #ececec;
+}
+
+/* ############################################################################# */
+/* ############################################################################# */
+/* ############################################################################# */
+
+#banner1 {
+	position: relative;
+	top: 0px;
+	width: 100%;
+	height: 50px;
+	background-color : #325c80;
+	padding-top: 20px;
+	box-sizing: content-box;
+	z-index: 3;
+}
+
+#banner1 ul {
+	position: relative;
+	float: left;
+	margin-left: 10px;
+	vertical-align: middle;
+}
+
+#banner1 ul li {
+	display: block;
+	float: left;
+	margin-left: 50px;
+}
+
+/* ############################################################################# */
+/* ############################################################################# */
+/* ############################################################################# */
+
+
+#banner {
+	position: relative;
+	top: 0px;
+	width: 100%;
+}
+
+#globalNav {
+	position: relative;
+	height: 50px;
+	line-height: 50px;
+	background: #FFF;
+	border-radius: 12px;
+	border: 2px solid #B8B8B8; 
+	font-size: 1rem;
+	z-index: 2;
+}
+
+ul, ul li {
+	list-style: none;
+	padding-left: 0px; 
+}
+
+#globalNav ul {
+	position: relative;
+	float: left;
+	margin-left: 10px;
+	font-size: 1rem;
+	vertical-align: middle;
+}
+
+#globalNav ul li {
+	display: block;
+	float: left;
+	margin-left: 50px;
+}
+
+#globalNav ul li a {
+	position:relative;
+	box-sizing:border-box;
+	color:#FFF;
+	cursor:pointer;
+	height:50px;
+	line-height:50px;
+	padding:0;
+	border-bottom: 2px solid transparent;
+	transition:.3s border-color,.3s color;
+	text-decoration: none;
+}
+
+#globalNav ul li a:hover {
+	border-bottom:2px solid #3b6caa;
+	color:#3b6caa;
+	text-decoration: none;
+}
+
+#megaMenuContainer {
+	background:#FFF;
+	border-radius: 12px;
+	border: 2px solid #e0e0e0;
+	position:absolute;
+	-webkit-transform:translate3d(0,-105%,0);
+	transform:translate3d(0,-105%,0);
+	-webkit-transition:-webkit-transform .25s;
+	transition:transform .25s;
+	width:100%;
+	z-index:1;
+	color: #000;
+}
+
+#megaMenuContainer input, #megaMenuContainer select {
+	color: #000;
+}
+
+.bannerShowMegaMenu #megaMenuContainer {
+	transform:translate3d(0,0,0);
+}
+
+.megaMenuSection {
+	display: none;
+}
+
+.megaMenuSection.showing {
+	display: block;
+}
+
+.megaMenuSection .megaMenuPanel {
+	margin-left: 50px;
+	padding: 10px 10px 10px 10px;
+}
+
+
+.megaMenuSection .megaMenuPanel .megaMenuColumn  .menuPanel{
+	margin: 5px 5px 5px 5px; 
+	padding: 5px 5px 5px 5px;
+}
+
+.megaMenuColumnSeparator {
+	padding-right: 20px;
+}
+
+h2 {
+	font-size: 25px;
+	font-weight: 100;
+	line-height: 1em;
+	padding-bottom: 10px;
+	font-stretch: ultra-condensed;
+}
+
+h3 {
+	color: #000;
+	font-weight: bold;
+	font-size: inherit;
+}
+
+label {
+	font-weight: normal;
+	padding-right: 14px;
+	vertical-align: middle;
+}
+
+.savedView{
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	padding: 2px 10px 2px 10px;
+	border: 1px solid #B8B8B8;
+	border-radius: 5px;
+}
+
+.savedView:hover{
+	background-color: #ececec;
+}
+
+.error {
+	color: #FF0000;
+}
+
+md-content {
+	display: inline !important;
+}
+
+input[type="checkbox"] {
+	vertical-align: auto;
+	margin-right: 7px;
+}
+
+input[type="radio"] {
+	margin-right: 7px;
+}
+
+input[type="text"] {
+	border: 1px solid rgb(224, 224, 224); 
+}
+
+button {
+	background: #fff;
+	border: 1px solid #4178be;
+	padding: 3px 10px 3px 10px;
+	margin: 3px 0px 3px 0px;
+	color : #4178be;
+}
+
+button:disabled {
+	color : #B8B8B8;
+	background: #cecece;
+}
+
+::-webkit-input-placeholder {
+    color:    #989898;
+}
+:-moz-placeholder {
+    color:    #989898;
+   opacity:  1;
+}
+::-moz-placeholder {
+    color:    #989898;
+   opacity:  1;
+}
+:-ms-input-placeholder {
+    color:    #989898;
+}
+:placeholder-shown {
+    color:    #989898;
+}
+
+.tableview {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.container {
+	margin-left : 0px !important;
+}
+
+.row {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.tableViewNavig {
+	font-size: 40px;
+	width: 1em;
+}
+
+.tableHeaderCell {
+	margin : 0px 1px 2px 1px;
+	background-color : #325c80;
+	color : #FFF;
+	padding : 3px 5px 3px 5px;
+}
+
+.tableCell {
+	margin : 0px 1px 0px 1px;
+	padding : 3px 5px 3px 5px;
+	border-bottom: 2px solid #325c80;
+	background-color : #FFF;
+}
+
+.subNav {
+	position: relative;
+	height: 50px;
+	background: #989898;
+	border-top: 3px solid #B8B8B8; 
+	border-bottom: 3px solid #B8B8B8;
+	font-size: 1rem;
+	top: -25px;
+	padding-left: 50px;
+	line-height: 50px;
+	vertical-align: middle;
+}
+
+.start {
+	font-size : 1.2em;
+	padding-right: 20px; 
+	cursor: pointer;
+}
+
+.starselected {
+	color: GoldenRod;
+}
