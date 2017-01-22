@@ -1,1 +1,130 @@
 
+###d3module.js
+var com;
+(function (com) {
+    var ddv;
+    (function (ddv) {
+        var test;
+        (function (test) {
+            'use strict';
+            angular.module("com.ddv.test.MyApp", ['ui.validate'])
+                .controller('MyController', com.ddv.test.MyController)
+				.component('myComponent', com.ddv.test.MyComponent);
+        })(test = ddv.test || (ddv.test = {}));
+    })(ddv = com.ddv || (com.ddv = {}));
+})(com || (com = {}));
+###d3component.html
+<br></br>
+	<span ng-show="userForm.savenameinput.$error.blacklist">Invalid name</span>
+	<span ng-show="userForm.savenameinput.$error.required">Name is required</span>
+	<form class="form-inline" name="userForm" novalidate>
+		<div class="form-group"> 
+			<div class="input-group"> 
+				<input style="width: auto;" class="form-control" ng-model="MyCompCtrl.saveName" min="1" max="30" required="" name="savenameinput" ui-validate="{blacklist: 'MyCompCtrl.validateSaveName($value)'}">
+				<button type="submit" class="btn btn-primary" style="border-left-width: 0px; border-top-left-radius:0; border-bottom-left-radius:0;">Save</button>
+			</div> 
+		</div>
+        
+	</form> 
+###d3controller.js
+var com;
+(function (com) {
+    var ddv;
+    (function (ddv) {
+        var test;
+        (function (test) {
+            var MyController = (function () {
+                /* @nginject */
+                function MyController($scope) {
+					$scope.callMe= function() {
+				        alert("You called me 2");
+				    };
+					this.isSetupModified = true;
+                }
+				return MyController;
+            })();
+            test.MyController = MyController;
+        })(test = ddv.test || (ddv.test = {}));
+    })(ddv = com.ddv || (com.ddv = {}));
+})(com || (com = {}));
+###d3.html
+<!DOCTYPE html>
+<html>
+	<head>
+<script type="text/javascript" src="angular-1.6.1/angular.js"></script>
+<script type="text/javascript" src="angular-1.6.1/angular-messages.js"></script>
+<script type="text/javascript" src="angular-1.6.1/angular-aria.js"></script>
+<script type="text/javascript" src="validate.js"></script>
+<script type="text/javascript" src="d3component.js"></script>
+<script type="text/javascript" src="d3service.js"></script>
+<script type="text/javascript" src="d3controller.js"></script>
+<script type="text/javascript" src="d3module.js"></script>
+
+<LINK href="bootstrap-3.3.5/dist/css/bootstrap.css" rel="stylesheet" type="text/css" media="all"> 
+
+<style>
+</style>
+</head>
+<body ng-app="com.ddv.test.MyApp">
+<div ng-controller="MyController as myCont">
+
+	<my-component isSetupModified="myCont.isSetupModified" call-to="callMe()"></my-component>
+
+</div>
+</body>
+</html>
+###d3component.js
+var com;
+(function (com) {
+    var ddv;
+    (function (ddv) {
+        var test;
+        (function (test) {
+            var MyComponent = (function () {
+				return {
+					transclude: true,
+					bindings: {
+						isSetupModified: '<',
+						callTo: '&callTo'
+					},
+					controller: function($scope) {
+						console.log(">>>>>> " + $scope);
+						this.setupInfos = [
+						    {id: "custom-1", name: "MySetup1"},
+						    {id: "custom-2", name: "MySetup2"},
+						    {id: "custom-3", name: "MySetup3"}
+						];
+						
+						this.saveName  = "";
+						this.isSaveNameValid = false;
+						
+						this.$onInit = function() {
+//							this.callTo();
+						};
+
+						this.validateSaveName = function(saveNameProposal) {
+							if (saveNameProposal.length<1) {
+								return -1;
+							} else if (saveNameProposal.length>30) {
+								return -1;
+							} else {
+								var rslt = 1; 
+								this.setupInfos.forEach(function(item){
+									if (item.name==saveNameProposal) {
+										rslt = 0;
+									}
+								});
+								return rslt;
+							}
+							return 1;
+		                };
+						
+					},
+					controllerAs: 'MyCompCtrl',
+					templateUrl: 'd3component.html'					
+				};
+            })();
+            test.MyComponent = MyComponent;
+        })(test = ddv.test || (ddv.test = {}));
+    })(ddv = com.ddv || (com.ddv = {}));
+})(com || (com = {}));
