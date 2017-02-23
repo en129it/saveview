@@ -10,13 +10,16 @@ angular.module("MyRegistry", ['ngRoute', 'ngMaterial'])
 
 
 /* @nginject */
-function AutocompleteController($scope, $element, $mdUtil, $mdConstant, $mdTheming, $window, $animate, $rootElement, $attrs, $q, $timeout) {
+function AutocompleteController($scope, $element, $mdUtil, $mdConstant, $mdTheming, $window, $animate, $rootElement, $attrs, $q, $timeout, $rootScope) {
 	this.isRequired = true;
 	this.isDisabled = false;
 	this.scope = $scope;
 	this.timer = null;
 	this.suggestions = [];
 	this.suggestionPromiseProcessing = false;
+	this.hideSuggestions = true;
+	this.selectedSuggestionIndex = -1;
+	this.inputElem = null;
 	
 	this.scope.searchText = "";
 	this.suggestionsExprParts = this.scope.suggestionsExpr.split(/ in /i);
@@ -25,7 +28,40 @@ function AutocompleteController($scope, $element, $mdUtil, $mdConstant, $mdThemi
 	var self = this;
 	
 	this.keydown = function(event) {
-		console.log("KEY DOWN");
+		switch (event.keyCode) {
+		  case 40: // key down arrow
+			event.stopPropagation();
+			event.preventDefault();
+			if (!this.hideSuggestions) {
+				this.selectedSuggestionIndex += 1;
+				if (this.selectedSuggestionIndex>this.suggestions.length) {
+					this.selectedSuggestionIndex = 0;
+				}
+			}
+			break;
+		  case 38: // key up arrow
+			event.stopPropagation();
+			event.preventDefault();
+			if (!this.hideSuggestions) {
+				this.selectedSuggestionIndex -= 1;
+				if (this.selectedSuggestionIndex<0) {
+					this.selectedSuggestionIndex = this.suggestions.length-1;
+				}
+			}
+			break;
+		  case 13: // key enter
+			if ((!this.hideSuggestions) && (this.selectedSuggestionIndex>-1)) {
+				event.stopPropagation();
+				event.preventDefault();
+				this.selectSuggestion(this.selectedSuggestionIndex);
+			}
+			break;
+		  case 27: // key esc
+			event.stopPropagation();
+			event.preventDefault();
+			this.clearAll();
+			break;
+		}
 	};
 	
 	this.blur = function() {
@@ -36,9 +72,27 @@ function AutocompleteController($scope, $element, $mdUtil, $mdConstant, $mdThemi
 		console.log("FOCUS");
 	};
 	
+	this.selectSuggestion = function(index) {
+		this.asyncExecutor(function () {
+			self.scope.selectedSuggestion = self.suggestions[index];
+console.log(">>>>>> select suggestion " + self.suggestions[index]);
+			self.clearAll();
+		});
+	};
+
+	this.closeSugggestions = function() {
+		this.inputElem.focus();
+		this.hideSuggestions = true;
+	};
+	
+	this.clearAll = function() {
+		this.scope.searchText = "";
+		this.suggestions = [];
+		this.selectedSuggestionIndex = -1;
+	};
+	
 	this.searchSuggestions = function(previousSearchText) {
 		var searchText = this.scope.searchText || '';
-console.log('@@@@@@@ searchSuggestions ' + previousSearchText + " <> " + searchText + "   " + this.scope.minChars);		
 		if (searchText!=previousSearchText) {
 			if (searchText.length>=this.scope.minChars) {
 				console.log("SEARCH_SUGGESTIONS " + this.scope.searchText);
@@ -47,18 +101,26 @@ console.log('@@@@@@@ searchSuggestions ' + previousSearchText + " <> " + searchT
 				suggestionPromiseProcessing = true;
 				
 				this.asyncExecutor(function() {
-					if (suggestionsPromise.success) suggestionsPromise.success(processSuggestionResults);
-					if (suggestionsPromise.then)    suggestionsPromise.then(processSuggestionResults);
-					if (suggestionsPromise.finally) suggestionsPromise.finally(function () {
-						suggestionPromiseProcessing = false;
-					});
+					if (suggestionsPromise.then) {
+						suggestionsPromise.then(function(results){
+							if (searchText==self.scope.searchText) {
+								self.suggestions = results;
+								self.hideSuggestions = (results==null) || (results.length==0);
+							}
+						});
+					}
+					if (suggestionsPromise.finally) {
+						suggestionsPromise.finally(function() {
+							suggestionPromiseProcessing = false;
+						});
+					}
 				});
 			} else {
 				this.suggestions = [];
 			}
 		}
 	};
-	
+		
 	this.triggerSearchSuggestions = function(searchText, previousSearchText) {
 		$timeout.cancel(self.timer);
 		self.timer = $timeout(function() {
@@ -97,6 +159,7 @@ console.log('@@@@@@@ searchSuggestions ' + previousSearchText + " <> " + searchT
 
 	
     this.scope.$watch('searchText', this.triggerSearchSuggestions);
+	this.inputElem = $element.find('input')[0];
 }
 
 
@@ -109,7 +172,8 @@ function ChipsAutocomplete() {
 			placeholder: '@placeholder',
 			minChars: '=minchars',
 			searchText: '=searchtext',
-			suggestionsExpr: '@suggestions'
+			suggestionsExpr: '@suggestions',
+			selectedSuggestion: '=selectedSuggestion'
 		},
 		template: function (element, attr) {
 			var tabIndex = attr.tabIndex;
@@ -126,6 +190,19 @@ function ChipsAutocomplete() {
 							ng-focus="$ctrl.focus()"\
 							placeholder="{{placeholder}}"\
 					/>\
+					<div class="autocomplete-suggestions-container"\
+					  ng-mouseenter="$ctrl.listEnter()"\
+					  ng-mouseleave="$ctrl.closeSugggestions()"\
+					  ng-mouseup="$ctrl.closeSugggestions()"\
+					  ng-hide="$ctrl.showSuggestions">\
+						<ul class="autocomplete-suggestions">\
+							<li ng-repeat="item in $ctrl.suggestions"\
+								ng-class="{selected: $index==$ctrl.selectedSuggestionIndex}"\
+								ng-click="$ctrl.selectSuggestion($index)">\
+							{{item}}\
+							</li>\
+						</ul>\
+					</div>\
                 </div>';
 		}
 	};
